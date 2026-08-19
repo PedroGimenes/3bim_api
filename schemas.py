@@ -20,7 +20,7 @@ class EventoBase(BaseModel):
  
   nome: str
   local: str
-  horario: int
+  horario: float
 
 class EventoCreate(EventoBase):
   pass

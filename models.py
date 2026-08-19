@@ -18,4 +18,4 @@ class EventoDB(Base):
   id = Column(Integer, primary_key=True, index=True)
   nome = Column(String(100), nullable=False)
   local = Column(String(100), nullable=False)
-  horario = Column(Integer, nullable=False)  
+  horario = Column(Float, nullable=False)  

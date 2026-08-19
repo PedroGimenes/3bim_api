@@ -58,3 +58,53 @@ Session = Depends(get_db)):
     db.commit()
     db.refresh(produto)
     return
+
+
+
+
+@app.get('/eventos', response_model=list[EventoResponse])
+def listar_eventos(db: Session = Depends(get_db)):
+  return db.query(EventoDB).all()   
+
+
+@app.post('/eventos', response_model=EventoResponse, status_code=201)
+def criar_evento(evento: EventoCreate, db: Session = Depends(get_db)):
+   novo_evento = EventoDB(**evento.dict())
+   db.add(novo_evento)
+   db.commit()
+   db.refresh(novo_evento)
+   return novo_evento
+
+
+@app.get('/eventos/{evento_id}', response_model=EventoResponse)
+def obter_evento(evento_id: int, db: Session = Depends(get_db)):
+  evento = db.query(EventoDB).filter(EventoDB.id == evento_id).first()
+  if evento is None:
+    raise HTTPException(status_code=404, detail='Evento não encontrado')
+  return evento
+
+
+@app.delete('/eventos/{evento_id}', status_code=204)
+def remover_evento(evento_id: int, db: Session = Depends(get_db)): 
+   evento = db.query(EventoDB).filter(EventoDB.id == evento_id).first()
+   if evento is None:
+    raise HTTPException(status_code=404, detail='Evento não encontrado')
+   
+
+   db.delete(evento)
+   db.commit()
+
+
+@app.put('/eventos/{evento_id}', response_model=EventoResponse)
+def atualizar_evento(evento_id: int, dados: EventoCreate, db:
+Session = Depends(get_db)):
+    evento = db.query(EventoDB).filter(EventoDB.id == evento_id).first()
+    if evento is None:
+     raise HTTPException(status_code=404, detail='Evento não encontrado')
+ 
+    evento.nome = dados.nome
+    evento.local = dados.local
+    evento.horario = dados.horario
+    db.commit()
+    db.refresh(evento)
+    return
