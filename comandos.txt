@@ -19,3 +19,7 @@ uvicorn main:app --reload
 Atualizar requirements.txt :
 
 pip freeze > requirements.txt
+
+testar 
+
+pytest -v
